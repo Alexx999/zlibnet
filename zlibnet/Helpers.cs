@@ -96,6 +96,7 @@ namespace ZLibNet
 			// this assembly's version number in the path in order to avoid version
 			// conflicts in case two applications are running at once with different versions
 			string dirName = Path.Combine(Path.GetTempPath(), "zlibnet-zlib" + ZLibDll.ZLibDllFileVersion);
+		    dirName = Path.Combine(dirName, IntPtr.Size == 4 ? "x32" : "x64");
 
 			try
 			{
@@ -109,7 +110,7 @@ namespace ZLibNet
 					throw;
 			}
 
-			string dllName = ZLibDll.GetDllName();
+			string dllName = ZLibDll.DllName;
 			string dllFullName = Path.Combine(dirName, dllName);
 
 			// Get the embedded resource stream that holds the Internal DLL in this assembly.
@@ -120,7 +121,7 @@ namespace ZLibNet
 			{
 				// Copy the assembly to the temporary file
 				string tempFile = Path.GetTempFileName();
-				using (Stream stm = thisAss.GetManifestResourceStream("ZLibNet." + dllName))
+				using (Stream stm = thisAss.GetManifestResourceStream("ZLibNet." + ZLibDll.GetResourceName()))
 				{
 					using (Stream outFile = File.Create(tempFile))
 					{
