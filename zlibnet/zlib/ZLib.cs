@@ -9,7 +9,7 @@ using System.Security;
 
 namespace ZLibNet
 {
-	internal static class ZLib
+	public static class ZLib
 	{
 		internal static IntPtr ZLibVersion = Marshal.StringToHGlobalAnsi("1.2.8");
 		internal static int ZStreamSize = Marshal.SizeOf(typeof(z_stream));
@@ -30,7 +30,7 @@ namespace ZLibNet
         [DllImport(ZLibDll.DllName, EntryPoint = "inflateInit2_", ExactSpelling = true, CharSet = CharSet.Ansi)]
 		static extern int inflateInit2(ref z_stream strm, int windowBits, IntPtr version, int stream_size);
 
-		internal static int inflateInit(ref z_stream strm, ZLibOpenType windowBits)
+	 	public static int inflateInit(ref z_stream strm, ZLibOpenType windowBits)
 		{
             return inflateInit2(ref strm, (int)windowBits, ZLib.ZLibVersion, ZLib.ZStreamSize);
 		}
@@ -40,7 +40,7 @@ namespace ZLibNet
 		static extern int deflateInit2(ref z_stream strm, int level, int method, int windowBits,
 			int memLevel, int strategy, IntPtr version, int stream_size);
 
-		internal static int deflateInit(ref z_stream strm, CompressionLevel level, ZLibWriteType windowBits)
+		public static int deflateInit(ref z_stream strm, CompressionLevel level, ZLibWriteType windowBits)
 		{
 			return deflateInit2(ref strm, (int)level, Z_DEFLATED, (int)windowBits, DEF_MEM_LEVEL,
 				Z_DEFAULT_STRATEGY, ZLib.ZLibVersion, ZLib.ZStreamSize);
@@ -48,26 +48,26 @@ namespace ZLibNet
 
 	    [SuppressUnmanagedCodeSecurity]
         [DllImport(ZLibDll.DllName, EntryPoint = "inflate", ExactSpelling = true)]
-		internal static extern int inflate(ref z_stream strm, ZLibFlush flush);
+		public static extern int inflate(ref z_stream strm, ZLibFlush flush);
 
 	    [SuppressUnmanagedCodeSecurity]
         [DllImport(ZLibDll.DllName, EntryPoint = "deflate", ExactSpelling = true)]
-		internal static extern int deflate(ref z_stream strm, ZLibFlush flush);
+		public static extern int deflate(ref z_stream strm, ZLibFlush flush);
 
 	    [SuppressUnmanagedCodeSecurity]
         [DllImport(ZLibDll.DllName, EntryPoint = "inflateEnd", ExactSpelling = true)]
-		internal static extern int inflateEnd(ref z_stream strm);
+		public static extern int inflateEnd(ref z_stream strm);
 
 	    [SuppressUnmanagedCodeSecurity]
         [DllImport(ZLibDll.DllName, EntryPoint = "deflateEnd", ExactSpelling = true)]
-		internal static extern int deflateEnd(ref z_stream strm);
+		public static extern int deflateEnd(ref z_stream strm);
 
 	    [SuppressUnmanagedCodeSecurity]
         [DllImport(ZLibDll.DllName, EntryPoint = "crc32", ExactSpelling = true)]
-		internal static extern uint crc32(uint crc, IntPtr buffer, uint len);
+		public static extern uint crc32(uint crc, IntPtr buffer, uint len);
 	}
 
-	enum ZLibFlush
+	public enum ZLibFlush
 	{
 		NoFlush = 0, //Z_NO_FLUSH
 		PartialFlush = 1,
@@ -83,12 +83,12 @@ namespace ZLibNet
 		DefaultStrategy = 0
 	}
 
-	//enum ZLibCompressionMethod
-	//{
-	//    Delated = 8
-	//}
+    //enum ZLibCompressionMethod
+    //{
+    //    Delated = 8
+    //}
 
-	enum ZLibDataType
+	public enum ZLibDataType
 	{
 		Binary = 0,
 		Ascii = 1,
@@ -139,7 +139,7 @@ namespace ZLibNet
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	struct z_stream
+	public struct z_stream
 	{
 		public IntPtr next_in;  /* next input byte */
 		public uint avail_in;  /* number of bytes available at next_in */
@@ -170,7 +170,7 @@ namespace ZLibNet
 		}
 	}
 
-	internal static class ZLibReturnCode
+	public static class ZLibReturnCode
 	{
 		public const int Ok = 0;
 		public const int StreamEnd = 1; //positive = no error

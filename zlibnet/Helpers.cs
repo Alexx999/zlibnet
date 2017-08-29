@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace ZLibNet
 {
-	internal class FixedArray : IDisposable
+	public class FixedArray : IDisposable
 	{
 		GCHandle pHandle;
 		Array pArray;
