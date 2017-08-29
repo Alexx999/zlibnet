@@ -5,12 +5,14 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.IO;
 using System.Reflection;
+using System.Security;
 
 namespace ZLibNet
 {
 	internal static class ZLib
 	{
-		internal const string ZLibVersion = "1.2.8";
+		internal static IntPtr ZLibVersion = Marshal.StringToHGlobalAnsi("1.2.8");
+		internal static int ZStreamSize = Marshal.SizeOf(typeof(z_stream));
 		internal const int MAX_WBITS = 15; /* 32K LZ77 window */
 		internal const int DEF_MEM_LEVEL = 8;
 		internal const int Z_DEFAULT_STRATEGY = 0;
@@ -24,38 +26,44 @@ namespace ZLibNet
 			DllLoader.Load();
 		}
 
-
-		[DllImport(ZLibDll.DllName, EntryPoint = "inflateInit2_", ExactSpelling = true, CharSet = CharSet.Ansi)]
-		static extern int inflateInit2(ref z_stream strm, int windowBits, string version, int stream_size);
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "inflateInit2_", ExactSpelling = true, CharSet = CharSet.Ansi)]
+		static extern int inflateInit2(ref z_stream strm, int windowBits, IntPtr version, int stream_size);
 
 		internal static int inflateInit(ref z_stream strm, ZLibOpenType windowBits)
 		{
-            return inflateInit2(ref strm, (int)windowBits, ZLib.ZLibVersion, Marshal.SizeOf(typeof(z_stream)));
+            return inflateInit2(ref strm, (int)windowBits, ZLib.ZLibVersion, ZLib.ZStreamSize);
 		}
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "deflateInit2_", ExactSpelling = true, CharSet = CharSet.Ansi)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "deflateInit2_", ExactSpelling = true, CharSet = CharSet.Ansi)]
 		static extern int deflateInit2(ref z_stream strm, int level, int method, int windowBits,
-			int memLevel, int strategy, string version, int stream_size);
+			int memLevel, int strategy, IntPtr version, int stream_size);
 
 		internal static int deflateInit(ref z_stream strm, CompressionLevel level, ZLibWriteType windowBits)
 		{
 			return deflateInit2(ref strm, (int)level, Z_DEFLATED, (int)windowBits, DEF_MEM_LEVEL,
-				Z_DEFAULT_STRATEGY, ZLibVersion, Marshal.SizeOf(typeof(z_stream)));
+				Z_DEFAULT_STRATEGY, ZLib.ZLibVersion, ZLib.ZStreamSize);
 		}
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "inflate", ExactSpelling = true)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "inflate", ExactSpelling = true)]
 		internal static extern int inflate(ref z_stream strm, ZLibFlush flush);
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "deflate", ExactSpelling = true)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "deflate", ExactSpelling = true)]
 		internal static extern int deflate(ref z_stream strm, ZLibFlush flush);
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "inflateEnd", ExactSpelling = true)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "inflateEnd", ExactSpelling = true)]
 		internal static extern int inflateEnd(ref z_stream strm);
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "deflateEnd", ExactSpelling = true)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "deflateEnd", ExactSpelling = true)]
 		internal static extern int deflateEnd(ref z_stream strm);
 
-		[DllImport(ZLibDll.DllName, EntryPoint = "crc32", ExactSpelling = true)]
+	    [SuppressUnmanagedCodeSecurity]
+        [DllImport(ZLibDll.DllName, EntryPoint = "crc32", ExactSpelling = true)]
 		internal static extern uint crc32(uint crc, IntPtr buffer, uint len);
 	}
 
